@@ -9,16 +9,18 @@ import re
 import time
 from datetime import datetime
 from flask import Flask, request, jsonify, render_template
-from google import genai
+from dotenv import load_dotenv
+import openai
+
+load_dotenv()
 
 app = Flask(__name__)
 
 # ---------------------------------------------------------------------------
-# Gemini client – key is read from the GEMINI_API_KEY env variable
-# Get a free key at: https://aistudio.google.com/apikey
+# OpenRouter client – key is read from the OPENROUTER_API_KEY env variable
 # ---------------------------------------------------------------------------
-client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
-MODEL = "gemini-2.0-flash"
+client = openai.OpenAI(api_key=os.environ.get("OPENROUTER_API_KEY"), base_url="https://openrouter.ai/api/v1")
+MODEL = "google/gemma-3-27b-it"
 
 # ---------------------------------------------------------------------------
 # Enquiry categories and routing rules (single source of truth)
@@ -75,24 +77,20 @@ Your job is to analyse incoming client enquiries and return a structured JSON ob
 """
 
 def analyse_enquiry(text: str) -> dict:
-    """Send the enquiry to Gemini and parse the structured response."""
+    """Send the enquiry to OpenRouter and parse the structured response."""
     start = time.time()
 
-    # Gemini takes a single combined prompt (system + user)
-    full_prompt = f"""{SYSTEM_PROMPT}
-
-Please analyse the following client enquiry and return your JSON response:
-
-<enquiry>
-{text.strip()}
-</enquiry>"""
-
     try:
+        response = client.chat.completions.create(
+            model=MODEL,
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": f"Please analyse the following client enquiry and return your JSON response:\n\n<enquiry>\n{text.strip()}\n</enquiry>"}
+            ]
+        )
+        raw = (response.choices[0].message.content or "").strip()
 
-        response = client.models.generate_content(model=MODEL, contents=full_prompt)
-        raw = (response.text or "").strip()
-
-        # Strip markdown fences if the model wraps in them anyway
+        # Strip markdown fences if present
         raw = re.sub(r"^```(?:json)?\s*", "", raw)
         raw = re.sub(r"\s*```$", "", raw)
 
@@ -117,10 +115,11 @@ Please analyse the following client enquiry and return your JSON response:
         return _error_response(f"AI returned malformed JSON: {e}", text)
     except Exception as e:
         msg = str(e)
+        print(f"[API Error] {msg}")  # Log full error
         if "API_KEY" in msg or "api key" in msg.lower() or "credentials" in msg.lower():
             return _error_response("Invalid or missing API key. Set GEMINI_API_KEY correctly.", text)
-        if "quota" in msg.lower() or "rate" in msg.lower():
-            return _error_response("Gemini API rate limit hit. Please wait a moment and retry.", text)
+        if "quota" in msg.lower() or "rate" in msg.lower() or "429" in msg or "resource_exhausted" in msg.lower():
+            return _error_response("Gemini API quota exceeded. Upgrade your plan or wait for quota reset.", text)
         if "connect" in msg.lower() or "network" in msg.lower():
             return _error_response("Could not reach the Gemini API. Check your network.", text)
         return _error_response(msg, text)
@@ -184,4 +183,4 @@ def health():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    app.run(debug=True, port=port)
+    app.run(debug=False, port=port)

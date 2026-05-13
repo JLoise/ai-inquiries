@@ -522,7 +522,7 @@ function clearForm() {
 }
 
 function showEmpty() {
-  document.getElementById('empty-state').style.display = '';
+  document.getElementById('empty-state').style.display = 'block';
   document.getElementById('loading').style.display = 'none';
   document.getElementById('results').style.display = 'none';
   document.getElementById('proc-time').textContent = '';
@@ -634,13 +634,13 @@ function renderResults(d) {
 
   const el = document.getElementById('results');
   el.innerHTML = html;
-  el.style.display = '';
+  el.style.display = 'block';
 }
 
 function renderError(msg) {
   const el = document.getElementById('results');
   el.innerHTML = `<div class="panel-body"><div class="error-box">⚠️ ${esc_(msg)}</div></div>`;
-  el.style.display = '';
+  el.style.display = 'block';
 }
 
 function esc_(s) {
