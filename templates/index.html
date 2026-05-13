@@ -492,12 +492,13 @@
 
 <script>
 const SAMPLES = [
-  { label: "New Client",   text: "Hello, I'm a property developer and I have 42 lots in a new complex finishing construction next March. I'd like to discuss strata management services including levies, by-laws, and AGM setup. Could someone call me to discuss rates?" },
-  { label: "Maintenance",  text: "Hi there, I live in unit 8 at Greenview Estate. There is a large crack appearing in the external wall beside my balcony. It got worse after last week's rain. This is urgent as I'm concerned it could be a structural issue." },
-  { label: "Complaint",    text: "I am absolutely disgusted with the service we have received. I have now emailed four times about the broken gate at the carpark entrance and nothing has been done in THREE months. I am considering escalating this to Fair Trading." },
-  { label: "Billing",      text: "Can you please explain my last levy notice? The amount charged was $1,240 which seems much higher than the previous quarter. I didn't receive any notice of a special levy being raised." },
-  { label: "General",      text: "Hi, can you tell me if there are any restrictions on keeping a small dog in my unit? The complex is Maplewood Gardens on Smith Street." },
-  { label: "Vague/Unclear",text: "lol yea ok so about the thing with the stuff? nobody told me anything. sort it out cheers" },
+  { label: "New Client",   text: "We are the Committee for a 14-lot owners corporation in Melbourne and we need independent advice on changing our body corporate manager. We want a better service provider, clear fees and help navigating the OC legislation." },
+  { label: "Maintenance",  text: "Our owners corporation has discovered water ingress to several carpark columns after heavy rain. The current manager has not arranged a rectification inspection yet and the Committee is worried about building defects liability." },
+  { label: "Complaint",    text: "The strata manager from our current company has not responded to minutes, AGM notices or owners corporation correspondence for six weeks. The Committee wants to know if we can terminate and find a new manager." },
+  { label: "Billing",      text: "Our last levy notice for the 22-lot complex includes a special levy for roof repairs. The Committee did not receive a clear breakdown of the costs or approval process. Can you explain what should happen?" },
+  { label: "General",      text: "As a Committee member, I need guidance on whether our by-laws allow pets in a Melbourne apartment building. We also want to know how that interacts with owners corporation rules." },
+  { label: "Vague/Unclear",text: "We are the Committee and we need help, but no one ever talks to us and the manager keeps changing things without asking." },
+  { label: "Support",      text: "Hi, I’m a Committee member and I need support getting the latest owners corporation books and records from our current management company." },
 ];
 
 // Populate sample pills
@@ -585,7 +586,7 @@ function renderResults(d) {
     </div>
 
     <div class="meta-row">
-      <div class="meta-item">→ <strong>${esc_(d.team||'—')}</strong></div>
+      <div class="meta-item">Team → <strong>${esc_(d.team||'—')}</strong></div>
       <div class="meta-item">SLA: <strong>${esc_(d.sla||'—')}</strong></div>
       <div class="meta-item">As of <strong>${esc_(d.timestamp||'—')}</strong></div>
     </div>
