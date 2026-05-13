@@ -50,7 +50,30 @@ python3 cli.py "Our Committee needs independent advice on changing our strata ma
 
 # Pipe from stdin
 echo "The current body corporate manager has not provided AGM minutes in a month." | python3 cli.py
-```
+
+### 4c. Deploy to Vercel
+
+1. Install Vercel CLI:
+   ```bash
+   npm install -g vercel
+   ```
+
+2. Deploy:
+   ```bash
+   vercel
+   ```
+
+3. Set environment variable in Vercel dashboard:
+   - Go to your project in Vercel dashboard
+   - Settings → Environment Variables
+   - Add `OPENROUTER_API_KEY` with your OpenRouter API key
+
+4. Redeploy if needed:
+   ```bash
+   vercel --prod
+   ```
+
+The app will be available at your Vercel URL.
 
 ---
 
