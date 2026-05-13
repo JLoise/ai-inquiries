@@ -4,6 +4,8 @@ import openai
 
 load_dotenv()
 
+# Example OpenRouter client using the OPENROUTER_API_KEY environment variable.
+# Change the model string below to use a different OpenRouter-compatible model.
 client = openai.OpenAI(
     api_key=os.getenv("OPENROUTER_API_KEY"),
     base_url="https://openrouter.ai/api/v1",

@@ -1,10 +1,10 @@
 # SMC Enquiry Processor
 
-> AI-powered client enquiry triage tool for Strata Management Consultants.
+> AI-powered enquiry triage for Strata Management Consultants, tailored to owners corporations and OC Committees in Melbourne.
 
-Paste any client enquiry — the tool classifies it, scores AI confidence, suggests a
-draft reply, recommends a staff action, and routes it to the right team, all in under
-two seconds.
+This tool helps SMC staff process Committee and owner enquiries by classifying strata-related requests, scoring AI confidence, recommending routing, and drafting a professional response.
+
+It is designed for the specific context of independent strata advisory work: changing body corporate managers, Committee support, levy inquiries, by-law and legal compliance, and defect / maintenance issues.
 
 ---
 
@@ -13,7 +13,7 @@ two seconds.
 ### 1. Prerequisites
 
 - Python 3.10+
-- A free [Gemini API key](https://aistudio.google.com/apikey) (Google AI Studio — free tier available)
+- An OpenRouter API key for the configured model
 
 ### 2. Install dependencies
 
@@ -25,10 +25,10 @@ pip3 install -r requirements.txt
 
 ```bash
 # macOS / Linux
-export GEMINI_API_KEY="AIza..."
+export OPENROUTER_API_KEY="your_openrouter_api_key"
 
 # Windows (PowerShell)
-$env:GEMINI_API_KEY = "AIza..."
+$env:OPENROUTER_API_KEY = "your_openrouter_api_key"
 ```
 
 ### 4a. Run the web UI
@@ -46,10 +46,10 @@ Open **http://localhost:5000** in your browser.
 python3 cli.py
 
 # Single enquiry from command line
-python3 cli.py "Hi, my levy notice looks wrong — the amount doubled this quarter."
+python3 cli.py "Our Committee needs independent advice on changing our strata manager and reviewing levy notices."
 
 # Pipe from stdin
-echo "Water is leaking through the ceiling above unit 4." | python3 cli.py
+echo "The current body corporate manager has not provided AGM minutes in a month." | python3 cli.py
 ```
 
 ---
@@ -72,13 +72,13 @@ enquiry-processor/
 
 | Feature | Detail |
 |---|---|
-| **Classification** | 8 categories: new client, support, complaint, billing, maintenance, legal, general, unclear |
+| **Classification** | 8 categories for Committee and strata enquiries: new client, support, complaint, billing, maintenance, legal, general, unclear |
 | **Confidence scoring** | 0–100 % with a plain-English explanation of certainty |
 | **Sentiment detection** | positive / neutral / negative / urgent |
-| **Routing** | Each category maps to a team, SLA, and priority level |
-| **Draft response** | Professional, ready-to-send reply (editable) |
-| **Escalation flag** | Auto-raised for urgent, safety-related, or legal-threat enquiries |
-| **Key points** | 2–5 action items for the handling staff member |
+| **Routing** | Each category maps to an SMC team, SLA, and priority level |
+| **Draft response** | Professional, Committee-friendly reply template with warm tone |
+| **Escalation flag** | Auto-raised for urgent safety, legal, or highly dissatisfied enquiries |
+| **Key points** | 2–5 action items that Committee-facing staff need to act on |
 | **Error handling** | Graceful fallback for API failures, malformed JSON, empty inputs |
 
 ---
@@ -87,7 +87,7 @@ enquiry-processor/
 
 ### Structured JSON output
 
-The system prompt asks Gemini to return *only* valid JSON with a fixed schema.
+The system prompt asks the AI model to return *only* valid JSON with a fixed schema.
 This avoids post-processing fragility. A regex strip removes occasional markdown
 code fences the model sometimes adds despite instructions.
 
@@ -167,10 +167,10 @@ Integration points:
 
 | Env var | Default | Purpose |
 |---|---|---|
-| `GEMINI_API_KEY` | *(required)* | Gemini API key |
+| `OPENROUTER_API_KEY` | *(required)* | OpenRouter API key |
 | `PORT` | `5000` | Web server port |
 
-The model is set to `gemini-2.0-flash` in `app.py`. Change `MODEL` to swap.
+The model is set in `app.py` using the `MODEL` constant. Change `MODEL` to switch to a different OpenRouter-compatible model.
 
 ---
 
