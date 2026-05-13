@@ -79,7 +79,7 @@ The app will be available at your Vercel URL.
 
 ## API Rate Limiting
 
-The API endpoints are protected with rate limiting using a sliding window strategy:
+The API endpoints are protected with rate limiting using a moving window strategy (sliding window):
 
 - **`/analyse`** (POST): 50 requests per minute - Main enquiry processing endpoint
 - **`/categories`** (GET): 200 requests per minute - Category definitions
