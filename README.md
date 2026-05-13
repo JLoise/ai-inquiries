@@ -77,6 +77,18 @@ The app will be available at your Vercel URL.
 
 ---
 
+## API Rate Limiting
+
+The API endpoints are protected with rate limiting using a sliding window strategy:
+
+- **`/analyse`** (POST): 50 requests per minute - Main enquiry processing endpoint
+- **`/categories`** (GET): 200 requests per minute - Category definitions
+- **`/health`** (GET): 100 requests per minute - Health check endpoint
+
+Rate limits are applied per IP address. When exceeded, the API returns a 429 (Too Many Requests) response.
+
+---
+
 ## Project Structure
 
 ```

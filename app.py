@@ -11,10 +11,20 @@ from datetime import datetime
 from flask import Flask, request, jsonify, render_template
 from dotenv import load_dotenv
 import openai
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 load_dotenv()
 
 app = Flask(__name__)
+
+# Rate limiting configuration
+limiter = Limiter(
+    app=app,
+    key_func=get_remote_address,
+    default_limits=["50 per minute"],
+    strategy="sliding-window"
+)
 
 # ---------------------------------------------------------------------------
 # OpenRouter client – key is read from the OPENROUTER_API_KEY env variable
@@ -166,6 +176,7 @@ def index():
 
 
 @app.route("/analyse", methods=["POST"])
+@limiter.limit("50 per minute")
 def analyse():
     data = request.get_json(silent=True) or {}
     text = (data.get("enquiry") or "").strip()
@@ -180,11 +191,13 @@ def analyse():
 
 
 @app.route("/categories")
+@limiter.limit("200 per minute")
 def categories():
     return jsonify(CATEGORIES)
 
 
 @app.route("/health")
+@limiter.limit("100 per minute")
 def health():
     return jsonify({"status": "ok", "model": MODEL})
 
